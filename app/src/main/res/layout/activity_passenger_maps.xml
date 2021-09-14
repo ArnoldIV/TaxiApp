@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:map="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".PassengerMapsActivity">
+
+    <LinearLayout
+        android:id="@+id/topButtonsLayout"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:id="@+id/settingsButton"
+            android:text="@string/settings"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            style="?android:attr/buttonBarButtonStyle"
+            android:textColor="@color/purple_200"/>
+        <TextView
+            android:id="@+id/TextView"
+            android:layout_width="1dp"
+            android:layout_height="wrap_content"
+            android:background="@color/streat_line" />
+        <Button
+            android:id="@+id/signOutButton"
+            android:text="@string/SignOut"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textColor="@color/purple_200"
+            style="?android:attr/buttonBarButtonStyle"/>
+
+    </LinearLayout>
+
+    <fragment
+        android:id="@+id/map"
+        android:layout_below="@+id/topButtonsLayout"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        />
+    <Button
+        android:id="@+id/bookTaxiButton"
+        android:textColor="@color/purple_200"
+        android:background="@drawable/edit_text_style"
+        android:text="@string/book_taxi"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_width="200dp"
+        android:layout_marginBottom="8dp"
+        android:gravity="center"
+        android:layout_height="wrap_content"/>
+</RelativeLayout>

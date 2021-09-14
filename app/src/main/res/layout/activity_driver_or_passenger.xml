@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/green"
+    tools:context=".DriverOrClientActivity">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <TextView
+            android:layout_width="214dp"
+            android:layout_height="77dp"
+            android:gravity="center"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="190dp"
+            android:background="@drawable/text_style"
+            android:text="@string/app_name"
+            android:textColor="@color/white"
+            android:textSize="50sp"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/clientButton"
+            android:layout_width="335dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="150dp"
+            android:background="@drawable/text_style"
+            android:onClick="goToPassengerSignIn"
+            android:text="@string/imPassenger"
+            android:textSize="20sp" />
+
+        <Button
+            android:id="@+id/driverButton"
+            android:layout_width="331dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="40dp"
+            android:background="@drawable/text_style"
+            android:onClick="goToDriverSingIn"
+            android:text="@string/imDriver"
+            android:textSize="20sp" />
+
+    </LinearLayout>
+</FrameLayout>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">TaxiApp</string>
+    <string name="taxi_service">Сервіс таксі</string>
+
+    <string name="title_activity_driver_maps">Map</string>
+    <string name="title_activity_passenger_maps">Map</string>
+
+    <string name="imPassenger">Я пасажир</string>
+    <string name="imDriver">Я водій</string>
+
+    <string name="driverSingIn">Реєстрація водія</string>
+    <string name="passengerSingIn">Реєстрація пасажира</string>
+
+    <string name="signIn">Реєстрація</string>
+    <string name="tapTo...">Натисніть щоб увійти</string>
+    <string name="settings">Налаштування</string>
+    <string name="SignOut">Вихід</string>
+    <string name="book_taxi">Замовити таксi</string>
+
+    <string name="name">Ваше ім`я</string>
+    <string name="email">Ваша почта</string>
+    <string name="password">Пароль</string>
+    <string name="confPassword">Підтвердження паролю</string>
+</resources>
