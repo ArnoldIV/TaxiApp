@@ -78,6 +78,8 @@ public class DriverMapsActivity extends FragmentActivity implements OnMapReadyCa
 
         String hello = "hello git";
 
+        //connect firestorage
+
         auth = FirebaseAuth.getInstance();
         currentUser = auth.getCurrentUser();
 
