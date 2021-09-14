@@ -57,8 +57,6 @@ public class DriverMapsActivity extends FragmentActivity implements OnMapReadyCa
     private static final int CHECK_SETTINGS_CODE = 111;
     private static final int REQUEST_LOCATION_PERMISSION = 222 ;
 
-
-
     private FusedLocationProviderClient fusedLocationClient;
     private SettingsClient settingsClient;
     private LocationRequest locationRequest;
@@ -77,6 +75,8 @@ public class DriverMapsActivity extends FragmentActivity implements OnMapReadyCa
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_driver_maps);
+
+        String hello = "hello git";
 
         auth = FirebaseAuth.getInstance();
         currentUser = auth.getCurrentUser();
