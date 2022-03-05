@@ -32,20 +32,26 @@ android {
 
 dependencies {
 
-    implementation 'androidx.appcompat:appcompat:1.3.1'
-    implementation 'com.google.android.material:material:1.4.0'
-    implementation 'androidx.constraintlayout:constraintlayout:2.1.0'
-    implementation 'com.google.android.gms:play-services-maps:17.0.1'
+    implementation 'androidx.appcompat:appcompat:1.4.1'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.3'
+    //  implementation of play services maps
+    implementation 'com.google.android.gms:play-services-maps:18.0.2'
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
+    //  implementation of firebase
     implementation platform('com.google.firebase:firebase-bom:28.3.0')
+    //  implementation of firebase auth
     implementation 'com.google.firebase:firebase-auth:21.0.1'
-    implementation 'com.google.firebase:firebase-database:20.0.1'
-    implementation 'com.google.firebase:firebase-core:19.0.0'
+    implementation 'com.google.firebase:firebase-database:20.0.3'
+    implementation 'com.google.firebase:firebase-core:20.1.0'
     implementation 'com.google.firebase:firebase-installations:17.0.0'
-    implementation 'com.google.android.gms:play-services-location:18.0.0'
-    implementation 'com.google.android.material:material:1.4.0'
+    //  implementation of play services location
+    implementation 'com.google.android.gms:play-services-location:19.0.1'
+    //  implementation of android material
+    implementation 'com.google.android.material:material:1.5.0'
+    //  implementation of geofire
     implementation 'com.firebase:geofire-android:3.0.0'
 }
+//  applying of google services
 apply plugin: 'com.google.gms.google-services'

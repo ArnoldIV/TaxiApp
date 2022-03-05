@@ -38,6 +38,7 @@ public class DriverSignInActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_driver_sign_in);
 
+        //initialization of firebase auth
         auth = FirebaseAuth.getInstance();
 
         if (auth.getCurrentUser() !=null){
@@ -55,7 +56,7 @@ public class DriverSignInActivity extends AppCompatActivity {
 
 
     }
-
+    //email validation and error output when the field is empty
     private boolean validateEmail() {
         String emailInput = textInputEmail.getEditText().getText().toString().trim();
         if (emailInput.isEmpty()) {
@@ -66,7 +67,7 @@ public class DriverSignInActivity extends AppCompatActivity {
             return true;
         }
     }
-
+    //name validation and error output when the field is empty,max length of name is 15
     private boolean validateName() {
         String nameInput = textInputName.getEditText().getText().toString().trim();
         if (nameInput.isEmpty()) {
@@ -80,7 +81,7 @@ public class DriverSignInActivity extends AppCompatActivity {
             return true;
         }
     }
-
+    //password validation and error output when the field is empty,min length of password is 5
     private boolean validatePassword() {
         String passwordInput = textInputPassword.getEditText().getText().toString().trim();
 
@@ -96,7 +97,7 @@ public class DriverSignInActivity extends AppCompatActivity {
         }
     }
 
-
+    //password confirm validation and error output when the field doesn't match
     private boolean validateConfirmPassword() {
         String passwordInput = textInputPassword.getEditText().getText().toString().trim();
         String confirmPasswordInput = textInputConfirmPassword.getEditText().getText().toString().trim();
@@ -110,20 +111,23 @@ public class DriverSignInActivity extends AppCompatActivity {
     }
 
     public void loginSingUpUser(View view) {
-
+        //if the user does not pass the full validation for logging, then user will receive errors about this
         if (!validateEmail() | !validateName() | !validatePassword()) {
             return;
         }
 
+        //log in for user
         if (isloginModeActive) {
             auth.signInWithEmailAndPassword(
+                    //getting email and password for registration
                     textInputEmail.getEditText().getText().toString().trim(),
                     textInputPassword.getEditText().getText().toString().trim())
                     .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                         @Override
                         public void onComplete(Task<AuthResult> task) {
                             if (task.isSuccessful()) {
-                                // Sign in success, update UI with the signed-in user's information
+                                /* Sign in success, update UI with the signed-in user's information
+                                and directing the user to the next activity*/
                                 Log.d(TAG, "signInWithEmail:success");
                                 FirebaseUser user = auth.getCurrentUser();
                                 startActivity(new Intent(
@@ -140,11 +144,13 @@ public class DriverSignInActivity extends AppCompatActivity {
                         }
                     });
         } else {
+            //full validation before creating a new user
             if (!validateEmail() | !validateName() | !validatePassword() |
                     !validateConfirmPassword()) {
                 return;
             }
 
+            //registration of a new user
             auth.createUserWithEmailAndPassword(
                     textInputEmail.getEditText().getText().toString().trim(),
                     textInputPassword.getEditText().getText().toString().trim())
@@ -152,7 +158,8 @@ public class DriverSignInActivity extends AppCompatActivity {
                         @Override
                         public void onComplete( Task<AuthResult> task) {
                             if (task.isSuccessful()) {
-                                // Sign in success, update UI with the signed-in user's information
+                                /* Sign in success, update UI with the signed-in user's information
+                                and directing the user to the next activity*/
                                 Log.d(TAG, "createUserWithEmail:success");
                                 FirebaseUser user = auth.getCurrentUser();
                                 startActivity(new Intent(
@@ -173,7 +180,7 @@ public class DriverSignInActivity extends AppCompatActivity {
 
 
     }
-
+    //change text in button and toggleTextView depending on registration or logging
     public void toggleLoginSignUp(View view) {
         if (isloginModeActive) {
             isloginModeActive = false;

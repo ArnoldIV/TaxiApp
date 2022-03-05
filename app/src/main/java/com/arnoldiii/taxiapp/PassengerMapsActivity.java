@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
+
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.FragmentActivity;
 
@@ -72,12 +73,12 @@ public class PassengerMapsActivity extends FragmentActivity implements OnMapRead
 
     private boolean isLocationUpdatesActive;
 
-    private Button settingsButton, singOutButton,bookTaxiButton;
+    private Button settingsButton, singOutButton, bookTaxiButton;
 
     private FirebaseAuth auth;
     private FirebaseUser currentUser;
 
-    private  DatabaseReference driversGeoFire;
+    private DatabaseReference driversGeoFire;
     private DatabaseReference nearestDriverLocation;
     private int searchRadius = 3;
     private boolean isDriverFound = false;
@@ -98,6 +99,7 @@ public class PassengerMapsActivity extends FragmentActivity implements OnMapRead
 
         driversGeoFire = FirebaseDatabase.getInstance().getReference().child("driversGeoFire");
 
+        //button for sign out
         singOutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -105,6 +107,7 @@ public class PassengerMapsActivity extends FragmentActivity implements OnMapRead
                 signOutPassenger();
             }
         });
+        //button for booking taxi
         bookTaxiButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -130,19 +133,22 @@ public class PassengerMapsActivity extends FragmentActivity implements OnMapRead
 
 
     }
-//this method searches for the nearest drivers within a 3 km radius using driver geolocation
+
+    /*this method searches for the nearest drivers within a 3 km radius using driver geolocation
+    if the driver is not found, the search radius will increase
+    */
     private void gettingNearestTaxi() {
         GeoFire geoFire = new GeoFire(driversGeoFire);
         GeoQuery geoQuery = geoFire.queryAtLocation(new GeoLocation(
-                currentLocation.getLatitude(),
-                currentLocation.getLongitude()),
+                        currentLocation.getLatitude(),
+                        currentLocation.getLongitude()),
                 searchRadius);
         geoQuery.removeAllListeners();
         geoQuery.addGeoQueryEventListener(new GeoQueryEventListener() {
             //when driver found,then
             @Override
             public void onKeyEntered(String key, GeoLocation location) {
-                if (! isDriverFound){
+                if (!isDriverFound) {
                     isDriverFound = true;
                     nearestDriverID = key;
 
@@ -159,11 +165,12 @@ public class PassengerMapsActivity extends FragmentActivity implements OnMapRead
             public void onKeyMoved(String key, GeoLocation location) {
 
             }
-            //when query in database is ready,then this code
+
+
             //unless drive isn`t found,radius will increased
             @Override
             public void onGeoQueryReady() {
-                if (!isDriverFound){
+                if (!isDriverFound) {
                     searchRadius++;
                     gettingNearestTaxi();
                 }
@@ -177,6 +184,7 @@ public class PassengerMapsActivity extends FragmentActivity implements OnMapRead
 
     }
 
+    //getting info about nearest driver location
     private void getNearestDriverLocation() {
 
         bookTaxiButton.setText("Getting your driver location");
@@ -195,15 +203,15 @@ public class PassengerMapsActivity extends FragmentActivity implements OnMapRead
                     double latitude = 0;
                     double longitude = 0;
 
-                    if (driverLocationParameters.get(0) !=null){
+                    if (driverLocationParameters.get(0) != null) {
                         latitude = Double.parseDouble(driverLocationParameters.get(0).toString());
                     }
-                    if (driverLocationParameters.get(1) !=null){
+                    if (driverLocationParameters.get(1) != null) {
                         longitude = Double.parseDouble(driverLocationParameters.get(1).toString());
                     }
-                    LatLng driverLatLng = new LatLng(latitude,longitude);
+                    LatLng driverLatLng = new LatLng(latitude, longitude);
 
-                    if (driverMarker != null){
+                    if (driverMarker != null) {
                         driverMarker.remove();
                     }
 
@@ -228,7 +236,7 @@ public class PassengerMapsActivity extends FragmentActivity implements OnMapRead
         });
 
     }
-
+    //method for sign out passenger and redirecting user to driver or client activity
     private void signOutPassenger() {
         String passengerUserID = currentUser.getUid();
         DatabaseReference passengers = FirebaseDatabase.
@@ -260,7 +268,7 @@ public class PassengerMapsActivity extends FragmentActivity implements OnMapRead
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         if (currentLocation != null) {
-            // Add a marker in Sydney and move the camera
+            // Add a marker of passenger and move the camera to passenger location
             LatLng passengerLocation = new LatLng(currentLocation.getLatitude(),
                     currentLocation.getLongitude());
             mMap.addMarker(new MarkerOptions().position(passengerLocation).title("Passenger location marker"));
@@ -268,6 +276,7 @@ public class PassengerMapsActivity extends FragmentActivity implements OnMapRead
         }
     }
 
+    //checking if isLocationUpdatesActive = false,then return or location updating stopped
     private void stopLocationUpdates() {
         if (!isLocationUpdatesActive) {
             return;
@@ -281,6 +290,7 @@ public class PassengerMapsActivity extends FragmentActivity implements OnMapRead
                 });
     }
 
+    //asks the user for permission to use location
     private void startLocationUpdates() {
 
         isLocationUpdatesActive = true;
@@ -304,15 +314,17 @@ public class PassengerMapsActivity extends FragmentActivity implements OnMapRead
                             // for ActivityCompat#requestPermissions for more details.
                             return;
                         }
+                        //if success
                         fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback,
                                 Looper.myLooper());
                         updateLocationUi();
 
                     }
                 })
+                //if dismiss
                 .addOnFailureListener(this, new OnFailureListener() {
                     @Override
-                    public void onFailure( Exception e) {
+                    public void onFailure(Exception e) {
                         int statusCode = ((ApiException) e).getStatusCode();
                         switch (statusCode) {
                             case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
@@ -327,6 +339,7 @@ public class PassengerMapsActivity extends FragmentActivity implements OnMapRead
                                 }
 
                                 break;
+                            //if the application is unable to access the user's location by itself
                             case LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE:
                                 String message = "Adjust location settings on your device";
                                 Toast.makeText(PassengerMapsActivity.this,
@@ -340,6 +353,7 @@ public class PassengerMapsActivity extends FragmentActivity implements OnMapRead
 
     }
 
+    //getting the result, whether the user has given permission to use location
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -361,12 +375,14 @@ public class PassengerMapsActivity extends FragmentActivity implements OnMapRead
         }
     }
 
+    //build locationSettingRequest
     private void buildLocationSettingsRequest() {
         LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder();
         builder.addLocationRequest(locationRequest);
         locationSettingsRequest = builder.build();
     }
 
+    //initialization of locationRequest,setting options:interval,priority
     private void buildLocationRequest() {
         locationRequest = new LocationRequest();
         locationRequest.setInterval(10000);
@@ -374,6 +390,7 @@ public class PassengerMapsActivity extends FragmentActivity implements OnMapRead
         locationRequest.setPriority(locationRequest.PRIORITY_HIGH_ACCURACY);
     }
 
+    //initialization callBack,for getting current location and updating interface
     private void buildLocationCallBack() {
         locationCallback = new LocationCallback() {
             @Override
@@ -388,6 +405,9 @@ public class PassengerMapsActivity extends FragmentActivity implements OnMapRead
         };
     }
 
+    /*updating interface with current location of user with the help of
+    getting Latitude and Longitide and setting a marker of current user location
+    */
     private void updateLocationUi() {
         if (currentLocation != null) {
 
@@ -416,12 +436,14 @@ public class PassengerMapsActivity extends FragmentActivity implements OnMapRead
         }
     }
 
+    //when application is being on pause,location updates stopped
     @Override
     protected void onPause() {
         super.onPause();
         stopLocationUpdates();
     }
 
+    //checking if there is permission after pausing the application
     @Override
     protected void onResume() {
         super.onResume();
@@ -432,7 +454,7 @@ public class PassengerMapsActivity extends FragmentActivity implements OnMapRead
             requestLocationPermission();
         }
     }
-
+    //explains to the user why the app needs access to the location using the SnackBar
     private void requestLocationPermission() {
         boolean shouldProvideRationale = ActivityCompat.shouldShowRequestPermissionRationale(this,
                 Manifest.permission.ACCESS_FINE_LOCATION);
@@ -447,13 +469,14 @@ public class PassengerMapsActivity extends FragmentActivity implements OnMapRead
                             );
                         }
                     });
+            //ask user again about giving permission without explanation
         } else {
             ActivityCompat.requestPermissions(PassengerMapsActivity.this, new String[]{
                             Manifest.permission.ACCESS_FINE_LOCATION},
                     REQUEST_LOCATION_PERMISSION);
         }
     }
-
+    //initialization of SnackBar
     private void showSnackBar(final String mainText, final String action,
                               View.OnClickListener listener) {
         Snackbar.make(findViewById(android.R.id.content), mainText, Snackbar.LENGTH_INDEFINITE)
@@ -461,17 +484,23 @@ public class PassengerMapsActivity extends FragmentActivity implements OnMapRead
 
     }
 
+    //processes the received response to the request for permission to use the location
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions,
                                            int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == REQUEST_LOCATION_PERMISSION) {
+            //request was cancelled
             if (grantResults.length <= 0) {
                 Log.d("onRequestPermissionsRes", "Request was canceled");
+                //request is accepted and the location is started
             } else if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 if (isLocationUpdatesActive) {
                     startLocationUpdates();
                 }
+                /*if user deny request again,then new snackBar appears with new parameters
+                and action to open device settings
+                 */
             } else {
                 showSnackBar("Turn on location settings", "Settings", new View.OnClickListener() {
                     @Override
@@ -487,7 +516,7 @@ public class PassengerMapsActivity extends FragmentActivity implements OnMapRead
             }
         }
     }
-
+    //checking if permission for location is granted
     private boolean checkLocationPermission() {
         int permissionState = ActivityCompat.checkSelfPermission(this, Manifest.permission
                 .ACCESS_FINE_LOCATION);

@@ -18,12 +18,12 @@ public class DriverOrClientActivity extends AppCompatActivity {
         setContentView(R.layout.activity_driver_or_passenger);
 
     }
-
+    //start activity for passenger authorization
     public void goToPassengerSignIn(View view) {
         startActivity(new Intent(
                 DriverOrClientActivity.this,PassengerSignInActivity.class));
     }
-
+    //start activity for driver authorization
     public void goToDriverSingIn(View view) {
         startActivity(new Intent(
                 DriverOrClientActivity.this,DriverSignInActivity.class));

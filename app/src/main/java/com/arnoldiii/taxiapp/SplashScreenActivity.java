@@ -14,7 +14,8 @@ public class SplashScreenActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash_screen);
 
-
+/*creating a new thread,duration of splash screen is 2 second,
+ after this,driverOrClientActivity will be opened*/
         Thread thread = new Thread() {
             @Override
             public void run() {

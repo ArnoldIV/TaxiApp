@@ -86,6 +86,7 @@ public class DriverMapsActivity extends FragmentActivity implements OnMapReadyCa
         settingsButton = findViewById(R.id.settingsButton);
         signOutButton = findViewById(R.id.signOutButton);
 
+        //button for driver sign out
         signOutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -111,7 +112,7 @@ public class DriverMapsActivity extends FragmentActivity implements OnMapReadyCa
         startLocationUpdates();
 
     }
-
+    //method for sign out driver and redirecting user to driver or client activity
     private void signOutDriver() {
 
         String driverUserId = currentUser.getUid();
@@ -147,14 +148,14 @@ public class DriverMapsActivity extends FragmentActivity implements OnMapReadyCa
 
         if (currentLocation != null) {
 
-            // Add a marker in Sydney and move the camera
+            // Add a marker of driver and move the camera to driver location
             LatLng driverLocation = new LatLng(currentLocation.getLatitude(),
                     currentLocation.getLongitude());
             mMap.addMarker(new MarkerOptions().position(driverLocation).title("Driver location"));
             mMap.moveCamera(CameraUpdateFactory.newLatLng(driverLocation));
         }
     }
-
+    //checking if isLocationUpdatesActive = false,then return or location updating stopped
     private void stopLocationUpdates() {
 
         if (!isLocationUpdatesActive) {
@@ -171,6 +172,8 @@ public class DriverMapsActivity extends FragmentActivity implements OnMapReadyCa
                 });
 
     }
+
+    //processes the received response to the request for permission to use the location
     @Override
     public void onRequestPermissionsResult(int requestCode,
                                            String[] permissions,
@@ -178,14 +181,18 @@ public class DriverMapsActivity extends FragmentActivity implements OnMapReadyCa
 
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == REQUEST_LOCATION_PERMISSION) {
-
+            //request was cancelled
             if (grantResults.length <= 0) {
                 Log.d("onRequestPermissions",
                         "Request was cancelled");
+                //request is accepted and the location is started
             } else if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 if (isLocationUpdatesActive) {
                     startLocationUpdates();
                 }
+                /*if user deny request again,then new snackBar appears with new parameters
+                and action to open device settings
+                 */
             } else {
                 showSnackBar(
                         "Turn on location on settings",
@@ -212,10 +219,10 @@ public class DriverMapsActivity extends FragmentActivity implements OnMapReadyCa
         }
 
     }
+    //asks the user for permission to use location
     private void startLocationUpdates() {
 
         isLocationUpdatesActive = true;
-
 
         settingsClient.checkLocationSettings(locationSettingsRequest)
                 .addOnSuccessListener(this,
@@ -242,7 +249,9 @@ public class DriverMapsActivity extends FragmentActivity implements OnMapReadyCa
                                     // to handle the case where the user grants the permission. See the documentation
                                     // for ActivityCompat#requestPermissions for more details.
                                     return;
+
                                 }
+                                //if success
                                 fusedLocationClient.requestLocationUpdates(
                                         locationRequest,
                                         locationCallback,
@@ -253,6 +262,7 @@ public class DriverMapsActivity extends FragmentActivity implements OnMapReadyCa
 
                             }
                         })
+                //if dismiss
                 .addOnFailureListener(this, new OnFailureListener() {
                     @Override
                     public void onFailure(Exception e) {
@@ -275,7 +285,7 @@ public class DriverMapsActivity extends FragmentActivity implements OnMapReadyCa
                                     sie.printStackTrace();
                                 }
                                 break;
-
+                            //if the application is unable to access the user's location by itself
                             case LocationSettingsStatusCodes
                                     .SETTINGS_CHANGE_UNAVAILABLE:
                                 String message =
@@ -294,7 +304,7 @@ public class DriverMapsActivity extends FragmentActivity implements OnMapReadyCa
                 });
 
     }
-
+    //getting the result, whether the user has given permission to use location
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
 
@@ -323,7 +333,7 @@ public class DriverMapsActivity extends FragmentActivity implements OnMapReadyCa
         }
 
     }
-
+    //initialization locationSettingRequest
     private void buildLocationSettingsRequest() {
 
         LocationSettingsRequest.Builder builder =
@@ -332,7 +342,7 @@ public class DriverMapsActivity extends FragmentActivity implements OnMapReadyCa
         locationSettingsRequest = builder.build();
 
     }
-
+    //initialization callBack,for getting current location and updating interface
     private void buildLocationCallBack() {
 
         locationCallback = new LocationCallback() {
@@ -348,7 +358,9 @@ public class DriverMapsActivity extends FragmentActivity implements OnMapReadyCa
         };
 
     }
-
+    /*updating interface with current location of user with the help of
+     getting Latitude and Longitide and setting a marker of current user location
+     */
     private void updateLocationUi() {
 
         if (currentLocation != null) {
@@ -359,6 +371,7 @@ public class DriverMapsActivity extends FragmentActivity implements OnMapReadyCa
             mMap.animateCamera(CameraUpdateFactory.zoomTo(12));
             mMap.addMarker(new MarkerOptions().position(driverLocation).title("Driver location"));
 
+            //for getting personnel driver id
             String driverUserId = currentUser.getUid();
             DatabaseReference driversGeoFire = FirebaseDatabase.getInstance().getReference()
                     .child("driversGeoFire");
@@ -372,7 +385,7 @@ public class DriverMapsActivity extends FragmentActivity implements OnMapReadyCa
         }
 
     }
-
+    //initialization of locationRequest,setting options:interval,priority
     private void buildLocationRequest() {
 
         locationRequest = new LocationRequest();
@@ -381,13 +394,13 @@ public class DriverMapsActivity extends FragmentActivity implements OnMapReadyCa
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
 
     }
-
+    //when application is being on pause,location updates stopped
     @Override
     protected void onPause() {
         super.onPause();
         stopLocationUpdates();
     }
-
+    //checking if there is permission after pausing the application
     @Override
     protected void onResume() {
         super.onResume();
@@ -400,7 +413,7 @@ public class DriverMapsActivity extends FragmentActivity implements OnMapReadyCa
             requestLocationPermission();
         }
     }
-
+    //explains to the user why the app needs access to the location using the SnackBar
     private void requestLocationPermission() {
 
         boolean shouldProvideRationale = ActivityCompat.shouldShowRequestPermissionRationale(
@@ -428,7 +441,7 @@ public class DriverMapsActivity extends FragmentActivity implements OnMapReadyCa
                     }
 
             );
-
+        //ask user again about giving permission without explanation
         } else {
 
             ActivityCompat.requestPermissions(
@@ -442,7 +455,7 @@ public class DriverMapsActivity extends FragmentActivity implements OnMapReadyCa
         }
 
     }
-
+    //initialization of SnackBar
     private void showSnackBar(
             final String mainText,
             final String action,
@@ -461,7 +474,7 @@ public class DriverMapsActivity extends FragmentActivity implements OnMapReadyCa
     }
 
 
-
+    //checking if permission for location is granted
     private boolean checkLocationPermission() {
 
         int permissionState = ActivityCompat.checkSelfPermission(this,
